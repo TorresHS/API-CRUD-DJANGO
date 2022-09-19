@@ -19,14 +19,32 @@ from rest_framework import routers
 from cliente.api.viewsets import ClienteViewsets, BancoViewsets
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+
+schema = get_schema_view(
+    openapi.Info(
+        title='BHub API - Challenge',
+        default_version='1.0.0',
+        description='API para desafio BHub'
+    ),
+    public=True,
+)
+
 r = routers.DefaultRouter()
 r.register('cliente', viewset= ClienteViewsets)
 r.register('banco', viewset=BancoViewsets)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(r.urls)),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/v1/', include(
+        [
+            path('', include(r.urls)),
+            path('swagger/', schema.with_ui('swagger', cache_timeout=0)),
+            path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+            path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+            path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+        ]
+    ))
 ]
+
