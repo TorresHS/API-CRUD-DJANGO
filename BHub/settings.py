@@ -87,6 +87,20 @@ DATABASES = {
    
 }
 
+SWAGGER_SETTINGS = {
+  'SECURITY_DEFINITIONS': {
+     'Basic': {
+           'type': 'basic',
+           'authorizationUrl': '/api/v1/token',
+     },
+     'Bearer': {
+           'type': 'apiKey',
+           'name': 'Authorization',
+           'in': 'header'
+     }
+  }
+}
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
